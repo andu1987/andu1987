@@ -1,0 +1,102 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>15N Sampling Protocol</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1600px;font-family:"DejaVu Sans",Arial,sans-serif;background:#f6f3ea;color:#2b2b22}
+header{background:linear-gradient(90deg,#3d5a2a,#6b8e3d);color:#fff;padding:34px 50px}
+header h1{font-size:40px;letter-spacing:.5px}
+header p{font-size:19px;opacity:.92;margin-top:8px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:34px;padding:34px 50px 20px}
+.card{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.card .top{display:flex;align-items:center;gap:22px;padding:22px 28px;color:#fff}
+.sorg .top{background:#b0702a}.mung .top{background:#2f7d4a}
+.top h2{font-size:28px}.top .sub{font-size:16px;opacity:.95;margin-top:4px}
+.intro{padding:16px 28px;font-size:16px;line-height:1.5;background:#faf7ef;border-bottom:1px solid #eee4cf}
+.mung .intro{background:#f1f8f2;border-color:#d6eadb}
+h3{font-size:19px;margin:20px 28px 12px;text-transform:uppercase;letter-spacing:1px}
+.sorg h3{color:#8a5317}.mung h3{color:#22633a}
+.stages{display:flex;margin:0 28px;position:relative}
+.stages:before{content:"";position:absolute;top:27px;left:40px;right:40px;height:4px;border-radius:2px}
+.sorg .stages:before{background:#e6c79a}.mung .stages:before{background:#a9d6b5}
+.st{flex:1;text-align:center;position:relative;padding:0 6px}
+.st .dot{width:58px;height:58px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:bold;font-size:15px;border:4px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.sorg .dot{background:#c98a3e}.mung .dot{background:#3c9a5d}
+.st b{display:block;font-size:16px}.st span{font-size:14px;color:#555;line-height:1.35;display:block;margin-top:4px}
+.fr{display:grid;grid-template-columns:150px 1fr;gap:0;margin:0 28px;border-radius:10px;overflow:hidden;border:1px solid #eee}
+.fr div{padding:11px 14px;font-size:15px;line-height:1.45;border-bottom:1px solid #eee}
+.fr .k{font-weight:bold;display:flex;align-items:center;gap:8px}
+.sorg .fr .k{background:#fbf1e2;color:#7a4a14}.mung .fr .k{background:#e8f4eb;color:#1f5a34}
+.fr div:nth-last-child(-n+2){border-bottom:none}
+.note{margin:18px 28px 26px;padding:14px 18px;border-radius:10px;font-size:15px;line-height:1.5}
+.sorg .note{background:#fff6e6;border-left:6px solid #c98a3e}
+.mung .note{background:#eaf6ee;border-left:6px solid #3c9a5d}
+.bridge{margin:6px 50px 0;background:#fff;border-radius:18px;box-shadow:0 4px 14px rgba(0,0,0,.08);padding:22px 30px;display:grid;grid-template-columns:1fr auto 1fr;gap:26px;align-items:center}
+.bridge h4{font-size:20px;margin-bottom:6px;color:#3d5a2a}
+.bridge p{font-size:15px;line-height:1.5}
+.formula{background:#2f3e24;color:#f3f0d8;padding:16px 24px;border-radius:12px;font-size:20px;text-align:center;font-family:"DejaVu Serif",serif;white-space:nowrap}
+.formula small{display:block;font-size:13px;opacity:.8;margin-top:6px;font-family:"DejaVu Sans",sans-serif}
+.wash{margin:22px 50px;display:flex;gap:18px;align-items:center;background:#e9eef6;border-radius:14px;padding:16px 24px;font-size:15px;line-height:1.5;border-left:6px solid #3f6aa0}
+footer{text-align:center;font-size:13px;color:#777;padding:0 0 22px}
+sup,sub{font-size:70%}
+</style></head><body>
+<header>
+<h1>Plant Sampling Protocol for <sup>15</sup>N Isotope Studies</h1>
+<p>Sorghum–Mung Bean system · Fertilizer uptake (%Ndff) and biological N<sub>2</sub> fixation (%Ndfa)</p>
+</header>
+
+<div class="cols">
+<!-- SORGHUM -->
+<section class="card sorg">
+ <div class="top">
+  <svg width="70" height="90" viewBox="0 0 70 90"><path d="M35 88V30" stroke="#fff" stroke-width="4"/><path d="M35 60C20 52 12 40 8 30M35 50c14-8 22-18 26-30M35 72C22 68 14 60 10 52" stroke="#fde7c4" stroke-width="4" fill="none" stroke-linecap="round"/><g fill="#fde7c4"><ellipse cx="35" cy="10" rx="8" ry="9"/><ellipse cx="27" cy="20" rx="7" ry="7"/><ellipse cx="43" cy="20" rx="7" ry="7"/><ellipse cx="35" cy="26" rx="7" ry="6"/></g></svg>
+  <div><h2>🌾 1. Sorghum</h2><div class="sub">Monocot · Non-N<sub>2</sub>-fixing crop</div></div>
+ </div>
+ <div class="intro">Used as the <b>target crop</b> for fertilizer uptake (<b>%Ndff</b>) or as the <b>non-fixing reference crop</b> for measuring N<sub>2</sub> fixation in legumes.</div>
+ <h3>Key sampling stages</h3>
+ <div class="stages">
+  <div class="st"><div class="dot">V6</div><b>Tillering</b><span>Early fertilizer uptake phase</span></div>
+  <div class="st"><div class="dot">R1</div><b>Anthesis / Flowering</b><span>Peak biomass &amp; N accumulation</span></div>
+  <div class="st"><div class="dot">R9</div><b>Physiological Maturity</b><span>Final dry matter &amp; grain N partitioning</span></div>
+ </div>
+ <h3>Plant fractions to separate</h3>
+ <div class="fr">
+  <div class="k">🌾 Panicle / Grain</div><div>Thresh and separate mature grain from the rachis and chaff.</div>
+  <div class="k">🍃 Leaves</div><div>Separate upper active leaves (flag leaf) from lower / senescent leaves. Collect dropped litter from the 1 m² core sampling zone.</div>
+  <div class="k">🪵 Stalks</div><div>Chop main stems into 2–3 cm segments for uniform drying.</div>
+  <div class="k">🌱 Roots</div><div>Take root-crown cores to <b>30–60 cm</b> depth. Rinse with deionized water, then 0.01 M CaCl<sub>2</sub>.</div>
+ </div>
+ <div class="note"><b>Why the CaCl<sub>2</sub> rinse?</b> It strips surface-adsorbed soil <sup>15</sup>NH<sub>4</sub><sup>+</sup> and <sup>15</sup>NO<sub>3</sub><sup>−</sup> so root enrichment reflects absorbed N only.</div>
+</section>
+
+<!-- MUNG BEAN -->
+<section class="card mung">
+ <div class="top">
+  <svg width="70" height="90" viewBox="0 0 70 90"><path d="M35 88V22" stroke="#fff" stroke-width="4"/><g fill="#d5f0dc"><path d="M35 40C20 40 10 30 10 20c12 0 22 8 25 20z"/><path d="M35 34c14 0 24-10 24-20-12 0-22 8-24 20z"/><path d="M35 58C22 58 12 50 12 42c11 0 20 6 23 16z"/></g><path d="M40 60c10 4 16 14 16 22" stroke="#d5f0dc" stroke-width="5" fill="none" stroke-linecap="round"/><g fill="#fff"><circle cx="50" cy="78" r="2.5"/><circle cx="52" cy="72" r="2.5"/></g></svg>
+  <div><h2>🌱 2. Mung Bean</h2><div class="sub">Dicot · N<sub>2</sub>-fixing legume (<i>Rhizobium</i> symbiosis)</div></div>
+ </div>
+ <div class="intro">Fixes atmospheric N<sub>2</sub> via symbiosis with <i>Rhizobium</i>. Sampling must <b>isolate nodules</b> and track <b>N remobilization to seeds</b>.</div>
+ <h3>Key sampling stages</h3>
+ <div class="stages">
+  <div class="st"><div class="dot">R1</div><b>Flowering</b><span>Peak active root nodulation</span></div>
+  <div class="st"><div class="dot">R3–R4</div><b>Pod Filling</b><span>Maximum rate of BNF (%Ndfa)</span></div>
+  <div class="st"><div class="dot">R7–R8</div><b>Harvest Maturity</b><span>Sample before pod shattering to avoid seed loss</span></div>
+ </div>
+ <h3>Plant fractions to separate</h3>
+ <div class="fr">
+  <div class="k">🫛 Pods &amp; Seeds</div><div>Shell pods to separate pod husks from mature beans.</div>
+  <div class="k">🍃 Stems &amp; Leaves</div><div>Detach leaf blades and petioles from stems and branches.</div>
+  <div class="k">🟤 Roots &amp; Nodules</div><div>Gently excavate the primary root core (<b>0–20 cm</b>). Detach nodules and weigh separately. Wash roots in 0.01 M CaCl<sub>2</sub> to remove soil mineral N.</div>
+ </div>
+ <div class="note"><b>Reference crop pairing:</b> Always harvest nearby <b>Sorghum</b> plants grown under identical soil conditions as the non-fixing reference to calculate Mung Bean's <b>%Ndfa</b> (N derived from atmosphere).</div>
+</section>
+</div>
+
+<div class="bridge">
+ <div><h4>🌾 Sorghum → reference</h4><p>Non-fixing plant takes up N only from soil + fertilizer; its <sup>15</sup>N enrichment defines the soil-N signature.</p></div>
+ <div class="formula">%Ndfa = (1 − atom% <sup>15</sup>N excess<sub>legume</sub> ⁄ atom% <sup>15</sup>N excess<sub>reference</sub>) × 100<small>¹⁵N isotope dilution method</small></div>
+ <div><h4>🌱 Mung bean → fixer</h4><p>Atmospheric N<sub>2</sub> (≈0.3663 atom% <sup>15</sup>N) dilutes the legume's enrichment relative to the reference.</p></div>
+</div>
+
+<div class="wash"><span style="font-size:30px">💧</span><div><b>Common lab step for all fractions:</b> oven-dry at 60–70 °C to constant weight, record dry matter, fine-grind (&lt;0.5 mm), and analyse total N and atom% <sup>15</sup>N by IRMS.</div></div>
+<footer>Sampling protocol summary · Sorghum–Mung Bean <sup>15</sup>N study</footer>
+</body></html>
