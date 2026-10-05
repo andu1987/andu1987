@@ -1,0 +1,144 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Above-Ground Fractions</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1760px;font-family:"DejaVu Sans",Arial,sans-serif;background:#f6f3ea;color:#2b2b22}
+header{background:linear-gradient(90deg,#3d5a2a,#6b8e3d);color:#fff;padding:30px 50px}
+header h1{font-size:38px}header p{font-size:18px;opacity:.92;margin-top:8px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:30px;padding:30px 40px 10px}
+.card{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.top{padding:18px 26px;color:#fff;display:flex;justify-content:space-between;align-items:baseline}
+.sorg .top{background:#b0702a}.mung .top{background:#2f7d4a}
+.top h2{font-size:26px}.top span{font-size:15px;opacity:.95}
+svg{display:block;width:100%;height:auto}
+.bags{display:flex;flex-wrap:wrap;gap:8px;padding:14px 22px 20px;border-top:1px solid #eee;align-items:center}
+.bags b{font-size:14px;margin-right:6px}
+.bag{display:flex;align-items:center;gap:6px;font-size:13.5px;padding:6px 11px;border-radius:8px;background:#f4f1e8}
+.bag i{width:14px;height:14px;border-radius:3px;display:inline-block}
+footer{text-align:center;font-size:13px;color:#777;padding:10px 0 22px}
+</style></head><body>
+<header>
+<h1>Above-Ground Plant Parts to Sample: Sorghum vs. Mung Bean</h1>
+<p>Shoots cut at the soil surface. Each numbered part is cut, bagged, dried and weighed separately for total N and atom% <sup>15</sup>N analysis</p>
+</header>
+<div class="cols">
+ <section class="card sorg">
+  <div class="top"><h2>🌾 Sorghum</h2><span>Non-fixing reference / %Ndff target crop</span></div>
+  <svg id="s" viewBox="0 0 820 700"></svg>
+  <div class="bags" id="sb"><b>Sample bags:</b></div>
+ </section>
+ <section class="card mung">
+  <div class="top"><h2>🌱 Mung Bean</h2><span>N<sub>2</sub>-fixing legume (%Ndfa)</span></div>
+  <svg id="m" viewBox="0 0 820 700"></svg>
+  <div class="bags" id="mb"><b>Sample bags:</b></div>
+ </section>
+</div>
+<footer>Illustrative diagram, not to scale. Above-ground fractions only; roots and nodules are not sampled here.</footer>
+<script>
+const NS="http://www.w3.org/2000/svg";
+let seed=7;const R=()=>{seed=(seed*16807)%2147483647;return (seed-1)/2147483646};
+const rr=(a,b)=>a+R()*(b-a);
+function el(p,tag,a,txt){const e=document.createElementNS(NS,tag);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;p.appendChild(e);return e}
+function wrap(t,n){const w=t.split(" ");const out=[];let l="";for(const x of w){if((l+" "+x).trim().length>n){out.push(l);l=x}else l=(l+" "+x).trim()}if(l)out.push(l);return out}
+function label(svg,n,col,y,title,desc,tx,ty){
+  el(svg,"path",{d:`M528,${y} L${tx},${ty}`,stroke:"#666","stroke-width":1.6,fill:"none","stroke-dasharray":"0"});
+  el(svg,"circle",{cx:tx,cy:ty,r:5,fill:"#333",stroke:"#fff","stroke-width":1.5});
+  el(svg,"circle",{cx:545,cy:y,r:15,fill:col,stroke:"#fff","stroke-width":2.5});
+  el(svg,"text",{x:545,y:y+5,"text-anchor":"middle","font-size":15,"font-weight":"bold",fill:"#fff"},n);
+  el(svg,"text",{x:568,y:y+6,"font-size":17,"font-weight":"bold",fill:"#222"},title);
+  wrap(desc,31).forEach((l,i)=>el(svg,"text",{x:568,y:y+28+i*19,"font-size":14.5,fill:"#555"},l));
+}
+function scene(svg,depthMax){
+  const d=el(svg,"defs",{});
+  const g=el(d,"linearGradient",{id:svg.id+"soil",x1:0,y1:0,x2:0,y2:1});
+  el(g,"stop",{offset:0,"stop-color":"#d9bb8e"});el(g,"stop",{offset:1,"stop-color":"#9c7650"});
+  const k=el(d,"linearGradient",{id:svg.id+"sky",x1:0,y1:0,x2:0,y2:1});
+  el(k,"stop",{offset:0,"stop-color":"#eaf3f8"});el(k,"stop",{offset:1,"stop-color":"#fbfaf3"});
+  el(svg,"rect",{x:0,y:0,width:820,height:640,fill:`url(#${svg.id}sky)`});
+  el(svg,"rect",{x:0,y:640,width:820,height:60,fill:`url(#${svg.id}soil)`});
+  el(svg,"line",{x1:0,y1:640,x2:820,y2:640,stroke:"#6d4f30","stroke-width":3});
+  el(svg,"text",{x:70,y:632,"font-size":13,fill:"#6d4f30","font-style":"italic"},"✂ cut shoot at soil surface");
+}
+function bags(id,items){const b=document.getElementById(id);items.forEach(([n,c,t])=>{const s=document.createElement("span");s.className="bag";s.innerHTML=`<i style="background:${c}"></i>${n}. ${t}`;b.appendChild(s)})}
+
+/* ---------------- SORGHUM ---------------- */
+(function(){
+const s=document.getElementById("s");scene(s);
+const C={pan:"#d08a1e",flag:"#2e7d32",up:"#5fa83a",low:"#c2a649",lit:"#9a7a45",stalk:"#a8894f",root:"#5e4430"};
+const X=270;
+// 1 m2 zone on ground
+el(s,"path",{d:"M95,652 L475,652 L440,626 L135,626 Z",fill:"#9a7a45",opacity:.12,stroke:C.lit,"stroke-width":2,"stroke-dasharray":"7 5"});
+el(s,"text",{x:395,y:668,"font-size":12.5,fill:"#4a3520","font-weight":"bold"},"1 m² zone");
+// litter
+for(const [x,y,a] of [[150,636,-10],[185,632,15],[372,634,8],[410,638,-20],[440,632,25],[225,637,-5]])
+  el(s,"path",{d:"M0,0 Q14,-6 30,0 Q14,5 0,0Z",fill:C.lit,transform:`translate(${x},${y}) rotate(${a})`});
+// lower senescent leaves
+el(s,"path",{d:`M${X+8},540 Q370,515 420,600 Q365,548 ${X+8},550Z`,fill:C.low,stroke:"#8a7430","stroke-width":1});
+el(s,"path",{d:`M${X-8},590 Q190,575 150,630 Q195,592 ${X-8},600Z`,fill:C.low,stroke:"#8a7430","stroke-width":1});
+// stalk
+el(s,"rect",{x:X-9,y:205,width:18,height:437,rx:4,fill:C.stalk,stroke:"#7a6034","stroke-width":1.5});
+for(const y of [600,545,470,400,330,260,225])el(s,"line",{x1:X-10,y1:y,x2:X+10,y2:y,stroke:"#6b532c","stroke-width":3});
+// upper active leaves
+for(const p of [
+ `M${X+8},260 Q370,190 465,228 Q370,212 ${X+8},270Z`,
+ `M${X-8},330 Q160,255 80,300 Q165,282 ${X-8},340Z`,
+ `M${X+8},400 Q390,340 480,385 Q390,362 ${X+8},410Z`,
+ `M${X-8},470 Q160,415 85,465 Q170,442 ${X-8},480Z`])
+ el(s,"path",{d:p,fill:C.up,stroke:"#3f7a22","stroke-width":1});
+// flag leaf
+el(s,"path",{d:`M${X+8},225 Q350,175 400,112 Q345,185 ${X+8},235Z`,fill:C.flag,stroke:"#1f5a22","stroke-width":1});
+// panicle
+el(s,"line",{x1:X,y1:205,x2:X,y2:80,stroke:"#8a6a2a","stroke-width":3});
+for(let i=0;i<9;i++){const y=95+i*12;el(s,"line",{x1:X,y1:y,x2:X+(i%2?-30:30),y2:y-12,stroke:"#8a6a2a","stroke-width":1.5})}
+for(let i=0;i<190;i++){const a=rr(0,6.283),r=Math.sqrt(R());const x=X+Math.cos(a)*r*38,y=140+Math.sin(a)*r*62;
+  el(s,"circle",{cx:x,cy:y,r:rr(4.5,6.5),fill:["#d08a1e","#c4781a","#e0a33a","#b96a14"][i%4],stroke:"#8a5410","stroke-width":.6})}
+// labels
+label(s,1,C.pan,90,"Panicle → Grain","Thresh; separate grain from rachis + chaff",X+30,130);
+label(s,2,C.flag,180,"Flag leaf","Upper active leaf, bag separately",372,150);
+label(s,3,C.up,275,"Upper green leaves","Active leaf blades",450,226);
+label(s,4,C.stalk,395,"Stalk (main stem)","Chop into 2–3 cm segments for even drying",X+9,440);
+// chopped segments inset
+for(let i=0;i<6;i++)el(s,"rect",{x:570+i*24,y:448,width:18,height:12,rx:2,fill:C.stalk,stroke:"#7a6034"});
+label(s,5,C.low,495,"Lower / senescent leaves","Yellowing leaves, kept apart from active ones",400,575);
+label(s,6,C.lit,578,"Leaf litter","Fallen leaves in the 1 m² zone",440,634);
+bags("sb",[[1,C.pan,"Grain (+ rachis/chaff)"],[2,C.flag,"Flag leaf"],[3,C.up,"Upper leaves"],[4,C.stalk,"Stalk"],[5,C.low,"Senescent leaves"],[6,C.lit,"Litter"]]);
+})();
+
+/* ---------------- MUNG BEAN ---------------- */
+(function(){
+const s=document.getElementById("m");seed=11;scene(s);
+const C={pod:"#3b3226",seed:"#5c9e3c",leaf:"#4f9d3a",pet:"#b5cf5a",stem:"#7a8f35",root:"#8a6a4a",nod:"#d0506e"};
+const X=260;
+// stems
+const stems=[`M${X},642 Q${X-6},450 ${X},250`,`M${X},520 Q215,480 170,420`,`M${X},470 Q320,440 360,380`,`M${X},385 Q215,350 190,300`,`M${X},345 Q305,320 330,280`];
+stems.forEach((d,i)=>el(s,"path",{d,stroke:C.stem,"stroke-width":i?6:10,fill:"none","stroke-linecap":"round"}));
+// trifoliate leaves
+function tri(x,y,a,L,sz){const g=el(s,"g",{transform:`translate(${x},${y}) rotate(${a})`});
+  el(g,"line",{x1:0,y1:0,x2:L,y2:0,stroke:C.pet,"stroke-width":4,"stroke-linecap":"round"});
+  const leaf=k=>`M0,0 C${k*.3},${-k*.42} ${k*.85},${-k*.34} ${k},0 C${k*.85},${k*.34} ${k*.3},${k*.42} 0,0Z`;
+  el(g,"path",{d:leaf(sz),fill:C.leaf,stroke:"#2f6a22","stroke-width":1,transform:`translate(${L},0)`});
+  el(g,"path",{d:leaf(sz*.8),fill:C.leaf,stroke:"#2f6a22","stroke-width":1,transform:`translate(${L*.92},0) rotate(-72)`});
+  el(g,"path",{d:leaf(sz*.8),fill:C.leaf,stroke:"#2f6a22","stroke-width":1,transform:`translate(${L*.92},0) rotate(72)`});}
+tri(170,420,-130,30,52);tri(360,380,-40,30,52);tri(190,300,-120,28,48);tri(330,280,-55,28,48);tri(X,250,-90,30,50);
+tri(X,585,-160,55,50);tri(X,560,-15,55,50);
+// pods
+function pods(x,y,angs,len){angs.forEach(a=>{const g=el(s,"g",{transform:`translate(${x},${y}) rotate(${a})`});
+  el(g,"path",{d:`M0,0 Q${len*.5},-6 ${len},3 Q${len*.5},7 0,5Z`,fill:C.pod});
+  for(let i=1;i<7;i++)el(g,"ellipse",{cx:len*i/7,cy:1.5,rx:3.2,ry:2.6,fill:"#5a4c38"});})}
+pods(300,455,[55,72,90,108],78);pods(215,395,[80,100,120],70);pods(300,335,[40,62,84],66);
+// labels
+label(s,1,C.pod,95,"Pods → husks","Shell pods; bag husks separately",345,505);
+label(s,2,C.seed,185,"Seeds (mature beans)","Grain N = remobilised N sink",318,368);
+// shelled pod inset
+el(s,"path",{d:"M575,236 Q650,222 725,238 Q650,250 575,236Z",fill:"none",stroke:C.pod,"stroke-width":3});
+for(let i=0;i<6;i++)el(s,"ellipse",{cx:600+i*21,cy:236,rx:8,ry:6,fill:C.seed,stroke:"#2f6a22"});
+label(s,3,C.leaf,300,"Leaf blades","Detach trifoliate leaflets",370,215);
+label(s,4,C.pet,390,"Petioles","Leaf stalks, pooled with leaves or bagged apart",X+30,568);
+label(s,5,C.stem,480,"Stems & branches","Main stem + lateral branches",X-2,600);
+el(s,"text",{x:568,y:585,"font-size":14,fill:"#2b1d10","font-weight":"bold"},"Pair with Sorghum reference");
+el(s,"text",{x:568,y:605,"font-size":13.5,fill:"#2b1d10"},"grown nearby on the same soil");
+el(s,"text",{x:568,y:624,"font-size":13.5,fill:"#2b1d10"},"→ needed to calculate %Ndfa");
+bags("mb",[[1,C.pod,"Pod husks"],[2,C.seed,"Seeds"],[3,C.leaf,"Leaf blades"],[4,C.pet,"Petioles"],[5,C.stem,"Stems"]]);
+})();
+</script>
+</body></html>
