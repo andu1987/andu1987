@@ -27,6 +27,11 @@ Both use the same receipt layout and VAT code (`shared/`), which is covered by `
 5. **The Press:**
    * Install QZ Tray (<https://qz.io/download>), then press Reconnect and Detect QZ Printers. Select your printer, set 58 or 80 mm, then Save Settings and Test Print.
    * For printing **without "Allow" pop-ups**, as administrator: in QZ Tray go to Advanced → Site Manager → **+** → Create New, and answer Yes to all. Paste the two files from the "QZ Tray Demo Cert" desktop folder into "Silent printing", then press Save signing.
+   The printer is also chosen automatically, as the hotel file did:
+   * The file first reuses a printer and paper width saved by the hotel file in the same browser.
+   * Otherwise, when QZ Tray connects, it picks the receipt printer (or the first printer).
+   * Choosing a printer in the list saves it immediately.
+   * If a receipt does not print, open **The Press → Print diagnostics → Run check**. Problems are shown in capitals, and you can copy the result and send it for support. The receipt window also has a **.bin** button, which saves the exact printer data as a file (a fallback, as in the hotel file).
 6. Every day: **Atelier → Download backup**, and keep the file on a USB drive. If the browser data is cleared, use Restore from backup.
 
 Pages use the hotel file's naming:

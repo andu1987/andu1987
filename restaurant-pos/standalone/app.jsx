@@ -188,7 +188,21 @@ const toCsv = (rows) => "﻿" + rows.map((r) => r.map(csvCell).join(",")).join("
 const PRINT_KEY = "hbm_rpos_printer_v1";
 const SIGN_KEY = "hbm_rpos_qz_signing_v1";
 const PRINT_DEFAULTS = { printer: "", mode: "escpos", paperWidthMm: 58, printableWidthMm: 48, charsPerLine: 32, feedLines: 4, cut: true, openDrawer: false, codePage: 0 };
-const getPrintCfg = () => { try { return { ...PRINT_DEFAULTS, ...(JSON.parse(localStorage.getItem(PRINT_KEY)) || {}) }; } catch { return { ...PRINT_DEFAULTS }; } };
+// Until a printer is saved here, reuse the printer and paper width saved by the hotel file in this
+// browser ("welkite_printer" / "welkite_paper"), since that printer is known to work on this computer.
+function inheritedDefaults() {
+  const d = { ...PRINT_DEFAULTS };
+  try {
+    const printer = localStorage.getItem("welkite_printer");
+    const paper = localStorage.getItem("welkite_paper");
+    if (printer) d.printer = printer;
+    if (paper === "80") Object.assign(d, { paperWidthMm: 80, printableWidthMm: 72, charsPerLine: 48 });
+  } catch {}
+  return d;
+}
+const getPrintCfg = () => { try { const saved = JSON.parse(localStorage.getItem(PRINT_KEY)); return saved ? { ...PRINT_DEFAULTS, ...saved } : inheritedDefaults(); } catch { return inheritedDefaults(); } };
+// Same rule as the hotel file: prefer a receipt/thermal printer, otherwise the first one.
+const pickReceiptPrinter = (list) => list.find((p) => /CN710|thermal|receipt|POS|XP-|TM-|80mm|58mm/i.test(p)) || list[0] || "";
 const savePrintCfg = (c) => localStorage.setItem(PRINT_KEY, JSON.stringify(c));
 const getSigning = () => { try { return JSON.parse(localStorage.getItem(SIGN_KEY)) || null; } catch { return null; } };
 
@@ -197,6 +211,7 @@ function pemBody(pem, label) {
   return m ? unb64(m[1].replace(/\s+/g, "")) : null;
 }
 let signKeyCache = null;
+let lastQzError = "";
 async function importSigningKey(keyPem) {
   if (/BEGIN RSA PRIVATE KEY/.test(keyPem)) throw new Error("This key is in PKCS#1 format. Use the private-key.pem created by QZ Tray's Site Manager (PKCS#8), or convert it: openssl pkcs8 -topk8 -nocrypt -in key.pem -out private-key.pem");
   const der = pemBody(keyPem, "PRIVATE KEY");
@@ -245,8 +260,9 @@ async function qzSend(cfg, lines) {
     const bytes = encodeEscPos(lines, { feedLines: cfg.feedLines, cut: cfg.cut, openDrawer: cfg.openDrawer, codePage: cfg.codePage });
     return qz.print(qz.configs.create(target, { encoding: "ISO-8859-1" }), [{ type: "raw", format: "command", flavor: "base64", data: bytesToBase64(bytes) }]);
   };
-  try { await run(); }
+  try { await run(); lastQzError = ""; }
   catch (e) {
+    lastQzError = errText(e);
     if (/websocket|connection|closed|not connect/i.test(errText(e)) && !/ConnectException|refused/i.test(errText(e))) {
       try { await qz.websocket.disconnect(); } catch {}
       await qzConnect();
@@ -339,8 +355,18 @@ function App() {
 
   const tryConnect = useCallback(async () => {
     setQzStatus("connecting");
-    try { await qzConnect(); setQzStatus("connected"); return true; } catch (e) { setQzStatus("offline"); throw e; }
-  }, []);
+    try { await qzConnect(); setQzStatus("connected"); } catch (e) { setQzStatus("offline"); lastQzError = e.message; throw e; }
+    // Like the hotel file: if no printer is chosen yet, choose the receipt printer automatically.
+    const cfg = getPrintCfg();
+    if (!cfg.printer) {
+      try {
+        const ps = await qz.printers.find();
+        const pick = pickReceiptPrinter(Array.isArray(ps) ? ps : [ps]);
+        if (pick) { savePrintCfg({ ...cfg, printer: pick }); toast(`Printer selected automatically: ${pick}. Change it in The Press if needed.`, "info"); }
+      } catch { /* printers can still be chosen manually in The Press */ }
+    }
+    return true;
+  }, [toast]);
   useEffect(() => {
     if (!user || !window.qz) return;
     setupQZ();
@@ -778,6 +804,7 @@ function ReceiptView({ state, user, isAdmin, act, toast, txId, autoPrint, onClos
     <div className="receipt-stage" style={{ margin: "12px 0" }}><ReceiptPaper lines={lines} cfg={cfg} caption={printedOk ? "Next print will be marked COPY" : "Receipt preview · what will print"} /></div>
     <div className="modal-actions">
       <button className="ink-btn-ghost plain" disabled={working} onClick={onClose}>Close</button>
+      <button className="ink-btn-ghost plain" title="Fallback: the exact printer bytes as a file (as the hotel file offered)" onClick={() => { const c = getPrintCfg(); download(`receipt-${pad8(tx.receiptNo)}.bin`, "application/octet-stream", encodeEscPos(lines, { feedLines: c.feedLines, cut: c.cut, codePage: c.codePage })); }}>.bin</button>
       <button className="ink-btn-ghost plain" title="Browser print dialog — not QZ Tray" onClick={() => printedOk ? setAsk({ kind: "reason", then: doBrowser }) : doBrowser("")}>Browser print (fallback)</button>
       <button className="ink-btn-ghost plain" onClick={() => setAsk({ kind: "fs" })}>{tx.fiscalFsNo ? "Edit FS No." : "Record FS No."}</button>
       {isAdmin && tx.status !== "voided" && <button className="ink-btn-ghost" onClick={() => setAsk({ kind: "void" })}>Void sale</button>}
@@ -960,7 +987,7 @@ function Press({ state, user, isAdmin, act, qzStatus, tryConnect, setPage }) {
   const [ask, setAsk] = useState(false);
   const set = (k, num) => (e) => setCfg({ ...cfg, [k]: e.target.type === "checkbox" ? e.target.checked : num ? Number(e.target.value) : e.target.value });
   const show = (text, kind = "") => setStatus({ text, kind });
-  const find = async () => { show("Searching for printers…"); try { await tryConnect(); const ps = await qz.printers.find(); const list = Array.isArray(ps) ? ps : [ps]; setPrinters(list); show(`Found ${list.length} printer(s). Select one and press Save.`, "ok"); } catch (e) { show(explainQZ(e), "bad"); } };
+  const find = async () => { show("Searching for printers…"); try { await tryConnect(); const ps = await qz.printers.find(); const list = Array.isArray(ps) ? ps : [ps]; setPrinters(list); if (!list.length) return show("QZ Tray found no printers. Install the receipt printer in Windows (Settings → Printers & scanners) and print a Windows test page, then try again.", "bad"); if (!cfg.printer || !list.includes(cfg.printer)) { const pick = pickReceiptPrinter(list); const c = { ...getPrintCfg(), printer: pick }; savePrintCfg(c); setCfg({ ...cfg, printer: pick }); show(`Found ${list.length} printer(s). Selected and saved: ${pick}. Choose another in the list if needed.`, "ok"); } else show(`Found ${list.length} printer(s). Current printer: ${cfg.printer}.`, "ok"); } catch (e) { show(explainQZ(e), "bad"); } };
   const dflt = async () => { try { await tryConnect(); const p = await qz.printers.getDefault(); if (!p) return show("No default printer is set.", "bad"); setPrinters((x) => [...new Set([...x, p])]); setCfg({ ...cfg, printer: p }); show(`Default printer: ${p}. Press Save.`, "ok"); } catch (e) { show(explainQZ(e), "bad"); } };
   const save = () => {
     const c = { ...cfg, paperWidthMm: Math.min(120, Math.max(30, cfg.paperWidthMm || 58)), charsPerLine: Math.min(64, Math.max(24, cfg.charsPerLine || 32)), feedLines: Math.min(10, Math.max(0, cfg.feedLines || 0)) };
@@ -998,7 +1025,7 @@ function Press({ state, user, isAdmin, act, qzStatus, tryConnect, setPage }) {
     <div className="cols-2">
       <Card><h3 className="serif" style={{ fontSize: 22, marginBottom: 14 }}>Receipt printer</h3>
         <div className="row" style={{ marginBottom: 12 }}><button className="ink-btn" onClick={find}>Detect QZ Printers</button><button className="ink-btn-ghost plain btn-sm" onClick={dflt}>Use system default</button><button className="ink-btn-ghost plain btn-sm" onClick={() => setAsk(true)}>Network printer (IP)…</button></div>
-        <Field label="Printer"><select className="ink-input" value={cfg.printer} onChange={set("printer")}><option value="">— pick a printer —</option>{options.map((p) => <option key={p} value={p}>{p}</option>)}</select></Field>
+        <Field label="Printer" help="Saved as soon as you choose it."><select className="ink-input" value={cfg.printer} onChange={(e) => { const c = { ...getPrintCfg(), printer: e.target.value }; savePrintCfg(c); setCfg({ ...cfg, printer: e.target.value }); show(e.target.value ? `Printer saved: ${e.target.value}` : "No printer selected.", e.target.value ? "ok" : "bad"); }}><option value="">— pick a printer —</option>{options.map((p) => <option key={p} value={p}>{p}</option>)}</select></Field>
         <Field label="Print method"><select className="ink-input" value={cfg.mode} onChange={set("mode")}><option value="escpos">Raw ESC/POS (thermal receipt printers — recommended)</option><option value="html">HTML / pixel (any printer; prints Amharic)</option></select></Field>
         <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 12, flexWrap: "wrap" }}><span>Paper width:</span>
           <label className="check"><input type="radio" checked={cfg.paperWidthMm === 58} onChange={() => setCfg({ ...cfg, paperWidthMm: 58, printableWidthMm: 48, charsPerLine: 32 })} /> 58mm</label>
@@ -1025,6 +1052,7 @@ function Press({ state, user, isAdmin, act, qzStatus, tryConnect, setPage }) {
         <button className="ink-btn-ghost btn-sm" style={{ marginTop: 10 }} onClick={() => setPage("sample")}>Receipt layout check (sample)</button>
       </Card>
     </div>
+    <Diagnostics state={state} qzStatus={qzStatus} />
     {isAdmin && <SigningCard show={show} tryConnect={tryConnect} />}
     <Card><h3 className="serif" style={{ fontSize: 22, marginBottom: 4 }}>Recent Print Attempts</h3>
       {recent.length === 0 ? <div style={{ color: "#9a7e5a", fontStyle: "italic", padding: "10px 0", fontSize: 13 }}>No print attempts yet.</div> : recent.map((p, i) => (
@@ -1034,6 +1062,45 @@ function Press({ state, user, isAdmin, act, qzStatus, tryConnect, setPage }) {
     </Card>
     {ask && <Ask title="Network receipt printer" label="IP address and port, e.g. 192.168.1.50:9100" help="For Ethernet/Wi-Fi ESC/POS printers. QZ Tray sends raw data to the printer's port (usually 9100)." okLabel="Use" onDone={(v) => { setAsk(false); if (!v) return; const p = "net://" + v.replace(/^net:\/\//, ""); if (!netPrinter(p)) return show("Enter an address like 192.168.1.50:9100", "bad"); setPrinters((x) => [...new Set([...x, p])]); setCfg({ ...cfg, printer: p, mode: "escpos" }); show(`Network printer ${p}. Press Save.`, "ok"); }} />}
   </div>);
+}
+
+// Everything needed to tell why a receipt did not print, in one block the user can copy and send.
+function Diagnostics({ state, qzStatus }) {
+  const [info, setInfo] = useState(null);
+  const run = async () => {
+    const cfg = getPrintCfg();
+    const lastFailed = state.txs.flatMap((t) => t.prints.map((p) => ({ ...p, receiptNo: t.receiptNo }))).filter((p) => p.status === "failed").sort((a, b) => String(b.at).localeCompare(String(a.at)))[0];
+    const r = {
+      "Checked at": new Date().toLocaleString("en-GB"),
+      "QZ library in this file": window.qz ? qz.version : "MISSING",
+      "QZ Tray connection": qzStatus,
+      "QZ Tray version": "-",
+      "Printers QZ Tray can see": "-",
+      "Saved printer": cfg.printer || "(none — choose one above)",
+      "Saved printer found": "-",
+      "Print method": cfg.mode === "html" ? "HTML / pixel" : "Raw ESC/POS",
+      "Paper / characters per line": `${cfg.paperWidthMm} mm / ${cfg.charsPerLine}`,
+      "Silent printing (signing)": getSigning() ? "set up" : "not set up (QZ Tray asks to Allow)",
+      "Hotel file printer in this browser": (() => { try { return localStorage.getItem("welkite_printer") || "(none)"; } catch { return "-"; } })(),
+      "Last QZ error": lastQzError || "(none)",
+      "Last failed receipt print": lastFailed ? `№ ${pad8(lastFailed.receiptNo)} at ${lastFailed.at}: ${lastFailed.error}` : "(none)",
+      "Browser": navigator.userAgent,
+    };
+    try {
+      await qzConnect();
+      try { r["QZ Tray version"] = await qz.api.getVersion(); } catch {}
+      const ps = await qz.printers.find(); const list = Array.isArray(ps) ? ps : [ps];
+      r["Printers QZ Tray can see"] = list.length ? list.join(" | ") : "NONE — install the printer in Windows first";
+      r["Saved printer found"] = netPrinter(cfg.printer) ? "network printer (not listed by Windows)" : cfg.printer ? (list.includes(cfg.printer) ? "yes" : "NO — choose the printer again") : "no printer saved";
+    } catch (e) { r["QZ Tray connection"] = "FAILED: " + explainQZ(e); }
+    setInfo(r);
+  };
+  const text = info ? Object.entries(info).map(([k, v]) => `${k}: ${v}`).join("\n") : "";
+  return (<Card><h3 className="serif" style={{ fontSize: 22, marginBottom: 6 }}>Print diagnostics</h3>
+    <p style={{ fontSize: 13, marginBottom: 10 }}>If a receipt does not print, press <b>Run check</b>. Problems are shown in capitals; you can copy the result and send it for support.</p>
+    <div className="row"><button className="ink-btn dark" onClick={run}>Run check</button>{info && <button className="ink-btn-ghost plain" onClick={() => navigator.clipboard?.writeText(text)}>Copy result</button>}</div>
+    {info && <pre className="mono small" style={{ whiteSpace: "pre-wrap", marginTop: 10, background: "#fffdf6", border: "1px dashed #cdb88a", padding: 10 }}>{text}</pre>}
+  </Card>);
 }
 
 function SigningCard({ show, tryConnect }) {

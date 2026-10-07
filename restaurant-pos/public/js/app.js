@@ -121,7 +121,18 @@ function shell() {
     mainEl);
   window.onhashchange = route;
   route();
-  qzs.connect().catch(() => { /* status pill shows offline; Printer page explains */ });
+  qzs.connect().then(autoPickPrinter).catch(() => { /* status pill shows offline; Printer page explains */ });
+}
+
+// Like the hotel file: when this computer has no printer chosen yet, pick the receipt printer.
+const pickReceiptPrinter = (list) => list.find((p) => /CN710|thermal|receipt|POS|XP-|TM-|80mm|58mm/i.test(p)) || list[0] || "";
+async function autoPickPrinter() {
+  const cfg = printing.getPrintConfig();
+  if (cfg.printer) return;
+  try {
+    const pick = pickReceiptPrinter(await qzs.findPrinters());
+    if (pick) { printing.savePrintConfig({ ...cfg, printer: pick }); toast(`Printer selected automatically: ${pick}. Change it on the Printer page if needed.`, "info"); }
+  } catch { /* chosen manually on the Printer page */ }
 }
 
 function go(key) { location.hash = "#/" + key; }
@@ -595,6 +606,7 @@ async function printerPage(el) {
   const printerSel = h("select", { class: "ink-input" });
   const fillPrinters = (list) => { mount(printerSel, h("option", { value: "" }, "— select printer —"), [...new Set([...(list || []), cfg.printer].filter(Boolean))].map((p) => h("option", { value: p }, p))); printerSel.value = cfg.printer; };
   fillPrinters([]);
+  printerSel.addEventListener("change", () => save()); // choosing a printer saves it at once
   const mode = h("select", { class: "ink-input" }, h("option", { value: "escpos" }, "Raw ESC/POS (thermal receipt printers — recommended)"), h("option", { value: "html" }, "HTML / pixel (any printer; supports Amharic text)"));
   mode.value = cfg.mode;
   const num = (v) => h("input", { class: "ink-input", value: String(v), inputmode: "numeric" });
@@ -618,7 +630,7 @@ async function printerPage(el) {
     s.status !== "connected" && s.message && h("div", { class: "notice bad" }, s.message));
   const unsub = qzs.onQzState((s) => { if (!document.body.contains(status) && currentPage !== "printer") { unsub(); return; } drawStatus(s); });
 
-  const find = async () => { show("Searching for printers…"); try { const list = await qzs.findPrinters(); fillPrinters(list); show(`Found ${list.length} printer(s). Select one and press Save.`, "ok"); } catch (e) { show(e.message, "bad"); } };
+  const find = async () => { show("Searching for printers…"); try { const list = await qzs.findPrinters(); fillPrinters(list); if (!list.length) { show("QZ Tray found no printers. Install the receipt printer in Windows and print a Windows test page first.", "bad"); return; } if (!list.includes(printerSel.value)) printerSel.value = pickReceiptPrinter(list); save(); show(`Found ${list.length} printer(s). Saved: ${printerSel.value}. Choose another in the list if needed.`, "ok"); } catch (e) { show(e.message, "bad"); } };
   const useDefault = async () => { try { const p = await qzs.defaultPrinter(); if (!p) { show("No default printer is set on this computer.", "bad"); return; } fillPrinters([p]); printerSel.value = p; show(`Default printer: ${p}. Press Save to keep it.`, "ok"); } catch (e) { show(e.message, "bad"); } };
   const useNetwork = async () => {
     const v = await promptBox("Network receipt printer", "IP address and port, e.g. 192.168.1.50:9100", { okLabel: "Use", value: (qzs.parseNetworkPrinter(printerSel.value) ? printerSel.value.replace("net://", "") : "") , help: "For Ethernet/Wi-Fi ESC/POS printers. QZ Tray sends raw data straight to the printer's port (usually 9100)." });
