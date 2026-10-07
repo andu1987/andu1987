@@ -1,0 +1,16 @@
+{
+  "name": "restaurant-pos",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Restaurant management and point of sale with QZ Tray receipt printing",
+  "type": "module",
+  "engines": { "node": ">=22.13" },
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning server/index.js",
+    "test": "node --disable-warning=ExperimentalWarning --test test/billing.test.js test/api.test.js",
+    "backup": "node --disable-warning=ExperimentalWarning tools/admin.js backup",
+    "users": "node --disable-warning=ExperimentalWarning tools/admin.js list-users",
+    "reset-password": "node --disable-warning=ExperimentalWarning tools/admin.js reset-password"
+  },
+  "license": "UNLICENSED"
+}
