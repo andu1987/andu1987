@@ -6,6 +6,41 @@ It is built from two references:
 * **Attachment 1:** the restaurant's receipt (FS No. 00000594, 25/08/2026). Business details, receipt layout and billing rules come from it.
 * **Attachment 2:** the Yejoka/Welkite hotel website. The look (colours, typefaces, cards, top bar) and the idea of a QZ printer page come from it. Its code was not reused (see "What changed from the hotel site").
 
+## Two editions
+
+| | **Single file** — `restaurant-pos-standalone.html` | **Server edition** — `npm start` |
+|---|---|---|
+| How to open | Double-click the file (Chrome or Edge), like the hotel file | Run the server, open `http://localhost:3000` |
+| Needs | Nothing (React and QZ Tray library are inside the file; works offline) | Node.js 22.13+ |
+| Where sales are stored | In this browser on this computer (IndexedDB) | One database on the server, shared by all devices |
+| Several cashier computers | No: each computer has its own separate records | Yes |
+| Backup | Atelier → Download backup / Restore (JSON file) | Settings → database backup |
+| Silent QZ printing | Paste QZ Site Manager certificate + key in The Press (stored only on that computer) | Key stays on the server |
+
+Both use the same receipt layout and VAT code (`shared/`), which is covered by `npm test`.
+
+### Single-file edition: quick start
+1. Copy `restaurant-pos-standalone.html` to the cashier computer, for example to `C:\Restaurant\`. Double-click it to open it in Chrome or Edge. Always open the **same file in the same browser**, because the data belongs to that browser.
+2. On first open, create the administrator (name, username, password). No password is built into the file.
+3. **Atelier:** check the restaurant particulars, add cashiers, and set up the tables.
+4. **Bill of Fare:** edit the menu. Prices are entered before VAT, as on the receipt; the screen also shows the price including VAT.
+5. **The Press:**
+   * Install QZ Tray (<https://qz.io/download>), then press Reconnect and Detect QZ Printers. Select your printer, set 58 or 80 mm, then Save Settings and Test Print.
+   * For printing **without "Allow" pop-ups**, as administrator: in QZ Tray go to Advanced → Site Manager → **+** → Create New, and answer Yes to all. Paste the two files from the "QZ Tray Demo Cert" desktop folder into "Silent printing", then press Save signing.
+6. Every day: **Atelier → Download backup**, and keep the file on a USB drive. If the browser data is cleared, use Restore from backup.
+
+Pages use the hotel file's naming:
+* Salon: dashboard
+* Service: orders and payment
+* Ledger: all sales, receipts and reprints
+* Bill of Fare: menu
+* Reports
+* The Press: printer
+* Atelier: settings
+
+To rebuild the file after editing `standalone/app.jsx` or `shared/*.js`, run `npm i --no-save @babel/standalone && npm run build:standalone`.
+Test it with `node test/standalone.e2e.mjs`, which opens the file from disk. Add `QZ=real` to use a real QZ Tray.
+
 ## Contents
 1. [Install and start](#1-install-and-start)
 2. [Administrator setup](#2-administrator-setup)

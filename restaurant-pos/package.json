@@ -8,6 +8,7 @@
   "scripts": {
     "start": "node --disable-warning=ExperimentalWarning server/index.js",
     "test": "node --disable-warning=ExperimentalWarning --test test/billing.test.js test/api.test.js",
+    "build:standalone": "node tools/build-standalone.mjs",
     "build:html": "node tools/build-single-html.mjs",
     "backup": "node --disable-warning=ExperimentalWarning tools/admin.js backup",
     "users": "node --disable-warning=ExperimentalWarning tools/admin.js list-users",
