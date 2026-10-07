@@ -677,7 +677,10 @@ export function createApp(options = {}) {
       let stat;
       try { stat = fs.statSync(file); } catch { continue; }
       if (!stat.isFile()) continue;
-      res.writeHead(200, { "Content-Type": TYPES[path.extname(file)] || "application/octet-stream", "Cache-Control": "no-cache" });
+      const headers = { "Content-Type": TYPES[path.extname(file)] || "application/octet-stream", "Cache-Control": "no-cache" };
+      // The single-file build carries its scripts inline; allow exactly those scripts by hash.
+      if (file.endsWith(".html")) headers["Content-Security-Policy"] = cspFor(file, stat.mtimeMs);
+      res.writeHead(200, headers);
       fs.createReadStream(file).pipe(res);
       return true;
     }
@@ -697,6 +700,17 @@ export function createApp(options = {}) {
     "base-uri 'none'",
     "frame-ancestors 'self'",
   ].join("; ");
+
+  const cspCache = new Map();
+  function cspFor(file, mtime) {
+    const hit = cspCache.get(file);
+    if (hit && hit.mtime === mtime) return hit.csp;
+    const html = fs.readFileSync(file, "utf8");
+    const hashes = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => `'sha256-${crypto.createHash("sha256").update(m[1]).digest("base64")}'`);
+    const csp = hashes.length ? CSP.replace("script-src 'self'", `script-src 'self' ${hashes.join(" ")}`) : CSP;
+    cspCache.set(file, { mtime, csp });
+    return csp;
+  }
 
   async function handler(req, res) {
     const url = new URL(req.url, "http://x");

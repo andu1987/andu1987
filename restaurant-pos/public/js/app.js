@@ -3,7 +3,7 @@ import { h, mount, toast, modal, confirmBox, promptBox, field, badge, localISODa
 import * as qzs from "./qz.js";
 import * as printing from "./printing.js";
 import { computeTotals, formatAmount, formatMoneyDisplay, formatQty, formatDecimal, parseAmount, parseQty, grossToNetCents, netToGrossCents, formatRate } from "/shared/money.js";
-import { layoutReceipt, receiptLinesToHtml, hasNonAscii, sampleReferenceReceipt, SAMPLE_RECEIPT_SOURCE, buildReceiptFromTransaction } from "/shared/receipt.js";
+import { layoutReceipt, receiptLinesToHtml, hasNonAscii, sampleReferenceReceipt, SAMPLE_RECEIPT_SOURCE, buildReceiptFromTransaction, receiptDocumentHtml, encodeEscPos, bytesToBase64 } from "/shared/receipt.js";
 
 const app = document.getElementById("app");
 let user = null;
@@ -693,8 +693,8 @@ async function samplePage(el) {
       if (!cfg.printer) { mount(show, h("div", { class: "notice bad" }, "Select a printer on the Printer page first.")); return; }
       const job = await api.post("/api/print-jobs", { printer: cfg.printer, mode: cfg.mode });
       try {
-        if (cfg.mode === "html") { const { receiptDocumentHtml } = await import("/shared/receipt.js"); await qzs.printHtml(cfg.printer, receiptDocumentHtml(appLines, cfg), cfg.paperWidthMm); }
-        else { const { encodeEscPos, bytesToBase64 } = await import("/shared/receipt.js"); await qzs.printRaw(cfg.printer, bytesToBase64(encodeEscPos(appLines, cfg))); }
+        if (cfg.mode === "html") { await qzs.printHtml(cfg.printer, receiptDocumentHtml(appLines, cfg), cfg.paperWidthMm); }
+        else { await qzs.printRaw(cfg.printer, bytesToBase64(encodeEscPos(appLines, cfg))); }
         await api.patch(`/api/print-jobs/${job.jobId}`, { status: "sent" });
         mount(show, h("div", { class: "notice ok" }, "Sample sent to the printer. Lay it beside the original receipt to compare."));
       } catch (e) { await api.patch(`/api/print-jobs/${job.jobId}`, { status: "failed", error: qzs.explain(e) }).catch(() => {}); mount(show, h("div", { class: "notice bad" }, qzs.explain(e))); }

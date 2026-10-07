@@ -24,6 +24,8 @@ const app = createApp({ dataDir, setupToken: "E2ESETUP01", log: () => {}, qzDir:
 const server = await app.listen(0, "127.0.0.1");
 // Use "localhost" so the page and QZ Tray share the loopback address space (no LNA prompt).
 const base = `http://localhost:${server.address().port}`;
+// ENTRY=/restaurant-pos.html tests the single-file build instead of the multi-file app.
+const entry = base + (process.env.ENTRY || "/");
 
 // Stand-in for qz-tray.js: records what the app sends; can be told to fail to test recovery.
 const STUB = `window.qz = (function(){
@@ -51,7 +53,7 @@ const step = (s) => console.log("•", s);
 
 try {
   // ---- first-run setup
-  await page.goto(base);
+  await page.goto(entry);
   await page.getByText("First-time setup").waitFor();
   await shot("01-setup");
   const inputs = page.locator(".login-card input");
@@ -113,7 +115,7 @@ try {
   await shot("04-printer");
 
   // ---- sample receipt check page
-  await page.goto(base + "/#/sample");
+  await page.goto(entry + "#/sample");
   await page.getByText("Calculation check").waitFor();
   assert.equal(await page.locator("td.fail").count(), 0);
   assert.equal(await page.locator("td.pass").count(), 5);
@@ -235,7 +237,7 @@ try {
   await page.locator(".modal").getByRole("button", { name: "Close" }).click();
 
   // ---- persistence after reload; dashboard numbers
-  await page.goto(base + "/#/dashboard");
+  await page.goto(entry + "#/dashboard");
   await page.reload();
   await page.getByText("Good day.").waitFor();
   const stats = await page.locator(".stat-value").allTextContents();

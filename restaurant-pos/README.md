@@ -50,6 +50,9 @@ Environment options:
 
 On Windows you can create a shortcut that runs `cmd /k "cd C:\restaurant-pos && npm start"`. You can also run it as a service with a tool such as NSSM, so it starts with the computer.
 
+### Single-file version
+`public/restaurant-pos.html` contains the whole interface in one HTML file: styles, scripts and the QZ Tray library. It is the same app, so it still needs the server for data. Start the server and open `http://localhost:3000/restaurant-pos.html`. If you open the file directly (double-click), it shows "Start the server first", because sales must be saved in the shared database, not in the browser. After changing any source file, rebuild it with `npm run build:html`.
+
 ### One computer or several?
 * **One cashier computer:** run the server on it and use `http://localhost:3000`. QZ Tray then works without any extra browser settings.
 * **Several computers** (cashier, manager, kitchen tablet): run the server on one computer. All devices then share the **same database**, so orders, sales and receipt numbers are shared. Each computer that prints needs its own QZ Tray and printer selection.
@@ -255,8 +258,8 @@ None of those behaviours are carried over. Kept from the hotel site: the palette
 ```
 server/      index.js (start), app.js (API, static files, QZ signing), db.js (schema), auth.js
 shared/      money.js (VAT/rounding), receipt.js (receipt layout, ESC/POS, HTML) – used by server and browser
-public/      index.html, css/, js/ (app, qz, printing, api, ui), vendor/ (qz-tray.js 2.3.0, qz-lna)
-tools/       admin.js (users, password reset, backup), make-tls-cert.sh
+public/      index.html, restaurant-pos.html (single-file build), css/, js/ (app, qz, printing, api, ui), vendor/ (qz-tray.js 2.3.0, qz-lna)
+tools/       admin.js (users, password reset, backup), make-tls-cert.sh, build-single-html.mjs
 test/        billing.test.js, api.test.js, browser.e2e.mjs
 data/        (created at runtime, not in git) restaurant.db, qz/ keys, tls/
 ```
