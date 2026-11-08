@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1480" height="760" viewBox="0 0 1480 760" font-family="DejaVu Sans, Arial, sans-serif">
+  <rect width="1480" height="760" fill="#ffffff"/>
+  <defs>
+    <marker id="ag" markerUnits="userSpaceOnUse" markerWidth="20" markerHeight="20" refX="16" refY="10" orient="auto"><path d="M0,0 L20,10 L0,20 z" fill="#2E7D1E"/></marker>
+    <marker id="ap" markerUnits="userSpaceOnUse" markerWidth="20" markerHeight="20" refX="16" refY="10" orient="auto"><path d="M0,0 L20,10 L0,20 z" fill="#6A1FB0"/></marker>
+    <marker id="ab" markerUnits="userSpaceOnUse" markerWidth="20" markerHeight="20" refX="16" refY="10" orient="auto"><path d="M0,0 L20,10 L0,20 z" fill="#A04A00"/></marker>
+    <marker id="ak" markerUnits="userSpaceOnUse" markerWidth="20" markerHeight="20" refX="16" refY="10" orient="auto"><path d="M0,0 L20,10 L0,20 z" fill="#222"/></marker>
+  </defs>
+
+  <!-- Moths drawn in -->
+  <line x1="620" y1="40" x2="620" y2="138" stroke="#222" stroke-width="4" stroke-dasharray="10,6" marker-end="url(#ak)"/>
+  <text x="640" y="68" font-size="24" font-weight="bold" fill="#111">Stemborer moths drawn to border grass</text>
+
+  <!-- PULL border: 3 rows -->
+  <g fill="none" stroke="#2E7D1E" stroke-width="7" stroke-dasharray="14,7">
+    <rect x="80"  y="145" width="680" height="450"/>
+    <rect x="105" y="170" width="630" height="400"/>
+    <rect x="130" y="195" width="580" height="350"/>
+  </g>
+
+  <!-- Crop plot -->
+  <rect x="165" y="230" width="510" height="280" fill="#FBF3E6" stroke="#555" stroke-width="3"/>
+  <g stroke="#A04A00" stroke-width="9">
+    <line x1="200" y1="248" x2="200" y2="492"/><line x1="315" y1="248" x2="315" y2="492"/>
+    <line x1="430" y1="248" x2="430" y2="492"/><line x1="545" y1="248" x2="545" y2="492"/>
+    <line x1="645" y1="248" x2="645" y2="492"/>
+  </g>
+  <g stroke="#8A2BE2" stroke-width="6" stroke-dasharray="12,7">
+    <line x1="257" y1="248" x2="257" y2="492"/><line x1="372" y1="248" x2="372" y2="492"/>
+    <line x1="487" y1="248" x2="487" y2="492"/><line x1="595" y1="248" x2="595" y2="492"/>
+  </g>
+
+  <!-- Repelled arrow -->
+  <line x1="300" y1="228" x2="300" y2="108" stroke="#222" stroke-width="4" marker-end="url(#ak)"/>
+    <text x="318" y="128" font-size="24" font-weight="bold" fill="#111">Repelled from crop</text>
+
+  <!-- Callouts -->
+  <line x1="815" y1="175" x2="770" y2="185" stroke="#2E7D1E" stroke-width="4" marker-end="url(#ag)"/>
+  <text x="825" y="165" font-size="27" font-weight="bold" fill="#2E7D1E">PULL: Brachiaria (Mulato II) or</text>
+  <text x="825" y="199" font-size="27" font-weight="bold" fill="#2E7D1E">Napier border, 1–3 rows around plot</text>
+
+  <line x1="815" y1="300" x2="605" y2="345" stroke="#6A1FB0" stroke-width="4" marker-end="url(#ap)"/>
+  <text x="825" y="292" font-size="27" font-weight="bold" fill="#6A1FB0">PUSH: Desmodium (e.g. D. intortum)</text>
+  <text x="825" y="326" font-size="27" font-weight="bold" fill="#6A1FB0">between sorghum rows</text>
+
+  <line x1="815" y1="420" x2="655" y2="440" stroke="#A04A00" stroke-width="4" marker-end="url(#ab)"/>
+  <text x="825" y="428" font-size="27" font-weight="bold" fill="#A04A00">Sorghum rows</text>
+
+  <text x="825" y="530" font-size="25" font-weight="bold" fill="#111">Desmodium also suppresses Striga</text>
+  <text x="825" y="562" font-size="23" font-weight="bold" fill="#333">(root exudates; ground cover)</text>
+
+  <!-- Note -->
+  <text x="80" y="660" font-size="20" font-weight="bold" fill="#333">Schematic, not to scale. Border width and row number change the share of land under sorghum;</text>
+  <text x="80" y="690" font-size="20" font-weight="bold" fill="#333">outputs should be reported per total system area.</text>
+</svg>
