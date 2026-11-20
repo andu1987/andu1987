@@ -1,0 +1,113 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<title>MBT Framework</title>
+<style>
+  :root{
+    --ink:#1f2933; --muted:#52606d; --line:#9aa5b1; --bg:#ffffff;
+    --p1:#2f6f6a; --p1l:#e6f2f0;
+    --p2:#3d4f8a; --p2l:#eaedf7;
+    --p3:#5b7a2e; --p3l:#eef4e3;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);font-family:"DejaVu Sans","Segoe UI",Arial,sans-serif;color:var(--ink);}
+  #fig{width:1000px;padding:28px 28px 24px;background:#fff}
+  h1{font-size:24px;text-align:center;font-weight:700;letter-spacing:.2px}
+  .sub{text-align:center;color:var(--muted);font-size:13.5px;margin:4px 0 20px}
+  .phase{display:flex;border:1.5px solid var(--c);border-radius:10px;overflow:hidden}
+  .tag{width:150px;flex:none;background:var(--c);color:#fff;padding:16px 14px;display:flex;flex-direction:column;justify-content:center}
+  .tag .n{font-size:12px;letter-spacing:1.5px;opacity:.85;font-weight:700}
+  .tag .t{font-size:17px;font-weight:700;line-height:1.25;margin-top:4px}
+  .tag .w{font-size:11.5px;opacity:.9;margin-top:8px;line-height:1.4}
+  .body{flex:1;padding:16px;background:var(--cl)}
+  .row{display:flex;align-items:stretch;gap:0}
+  .box{background:#fff;border:1.2px solid var(--c);border-radius:7px;padding:9px 11px;flex:1;display:flex;flex-direction:column;justify-content:center}
+  .box b{font-size:14.5px;color:var(--c)}
+  .box span{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.4}
+  .box.key{background:var(--c)}
+  .box.key b,.box.key span{color:#fff}
+  .arr{width:30px;flex:none;display:flex;align-items:center;justify-content:center;color:var(--c);font-size:20px;font-weight:700}
+  .sites{display:flex;flex-direction:column;gap:6px;flex:1}
+  .site{background:#fff;border:1.2px solid var(--c);border-radius:7px;padding:5px 10px;font-size:13px}
+  .site b{color:var(--c)} .site span{color:var(--muted);font-size:12px}
+  .down{text-align:center;color:var(--line);font-size:22px;line-height:1;margin:6px 0}
+  .merge{margin-top:10px;display:flex;align-items:center;gap:10px}
+  .merge .lab{font-size:12.5px;color:var(--muted)}
+  table{width:100%;border-collapse:collapse;font-size:12.8px;background:#fff;border:1.2px solid var(--c);border-radius:7px;overflow:hidden}
+  th{background:var(--c);color:#fff;text-align:left;padding:6px 9px;font-weight:600}
+  td{padding:5px 9px;border-top:1px solid #dde3ea}
+  td:first-child{font-weight:700;color:var(--c);width:40px}
+  .note{font-size:11.5px;color:var(--muted);margin-top:8px}
+  .stage .n{display:inline-block;background:var(--c);color:#fff;border-radius:50%;width:20px;height:20px;text-align:center;font-size:12px;line-height:20px;margin-right:6px}
+  .split{display:flex;gap:14px;margin-top:12px}
+  .split > div{flex:1}
+  .mini{font-size:12.5px;line-height:1.5;color:var(--ink)}
+  .mini b{color:var(--c)}
+</style></head>
+<body><div id="fig">
+<h1>Three-Phase Mother–Baby Trial (MBT) Framework</h1>
+<p class="sub">Participatory design, testing and farmer evaluation of push–pull technology (PPT) with sorghum</p>
+
+<!-- PHASE I -->
+<div class="phase" style="--c:var(--p1);--cl:var(--p1l)">
+  <div class="tag"><div class="n">PHASE I</div><div class="t">Co-design &amp; crop selection</div><div class="w">With farmers in three study areas</div></div>
+  <div class="body"><div class="row">
+    <div class="sites">
+      <div class="site"><b>Bedeno</b> <span>· Dawa Chefa woreda</span></div>
+      <div class="site"><b>Shewa Robit</b> <span>· Kebele 07</span></div>
+      <div class="site"><b>Tere</b> <span>· Qewet woreda</span></div>
+    </div>
+    <div class="arr">→</div>
+    <div class="box"><b>Cross-site analysis</b><span>Find the crops that farmers in all three areas share, for PPT diversification</span></div>
+    <div class="arr">→</div>
+    <div class="box key"><b>Agreed crops</b><span>Main crop: sorghum<br>Diversification: mung bean, haricot bean, tomato</span></div>
+  </div></div>
+</div>
+<div class="down">▼</div>
+
+<!-- PHASE II -->
+<div class="phase" style="--c:var(--p2);--cl:var(--p2l)">
+  <div class="tag"><div class="n">PHASE II</div><div class="t">Mother–baby trials</div><div class="w">Season 1: Jun–Nov 2024<br>Season 2: Jun–Dec 2025</div></div>
+  <div class="body">
+    <div class="row">
+      <div class="box"><b>Mother trial</b><span>At the FTC · managed by researchers<br>RCBD · 6 treatments × 3 replications</span></div>
+      <div class="arr">→</div>
+      <div class="box" style="flex:.7"><b>Model farmers</b><span>Selected to host baby trials</span></div>
+      <div class="arr">→</div>
+      <div class="box"><b>Baby trials</b><span>On farmers' own fields · managed by farmers<br>2–3 treatments per farmer</span></div>
+    </div>
+    <div class="merge"><div class="box key" style="flex:none;padding:7px 12px"><b style="font-size:13.5px">Data from mother and baby trials combined</b></div></div>
+    <div style="margin-top:12px">
+      <table>
+        <tr><th colspan="4">Treatments tested (T1–T6)</th></tr>
+        <tr><td>T1</td><td>Sole sorghum (control)</td><td style="font-weight:700;color:var(--c);width:40px">T4</td><td>Sorghum + haricot bean intercrop</td></tr>
+        <tr><td>T2</td><td>Sole tomato</td><td style="font-weight:700;color:var(--c)">T5</td><td>PPT: sorghum + <i>Desmodium</i> + <i>Brachiaria</i></td></tr>
+        <tr><td>T3</td><td>Sorghum + mung bean intercrop</td><td style="font-weight:700;color:var(--c)">T6</td><td>PPT + tomato (diversified PPT)</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="down">▼</div>
+
+<!-- PHASE III -->
+<div class="phase" style="--c:var(--p3);--cl:var(--p3l)">
+  <div class="tag"><div class="n">PHASE III</div><div class="t">Farmer evaluation</div><div class="w">At three crop growth stages</div></div>
+  <div class="body">
+    <div class="row">
+      <div class="box stage"><b><span class="n">1</span>Vegetative</b><span>Crop vigour · pest resistance · weed suppression</span></div>
+      <div class="arr">→</div>
+      <div class="box stage"><b><span class="n">2</span>Flowering</b><span>Disease tolerance · flowering timing · labour</span></div>
+      <div class="arr">→</div>
+      <div class="box stage"><b><span class="n">3</span>Harvest</b><span>Yield · fodder · economic return · overall preference</span></div>
+    </div>
+    <div class="split">
+      <div class="mini"><b>How farmers score</b><br>Mother trial: rate each treatment 1–10 per criterion<br>Baby trials: rank treatments from most to least preferred</div>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <div class="box"><b>Synthesis of farmer preferences</b><span>Combined across all three stages and both trial types</span></div>
+      <div class="arr">→</div>
+      <div class="box key"><b>Output: farmer-validated PPT options</b><span>Evidence to guide scaling decisions</span></div>
+    </div>
+  </div>
+</div>
+
+</div></body></html>
