@@ -1,0 +1,107 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<title>MBT Framework Landscape</title>
+<style>
+  :root{--ink:#1d2430;--muted:#5a6472;--acc:#24365c;--accl:#eef1f6;--line:#c3cad5}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#fff;font-family:"DejaVu Sans","Segoe UI",Arial,sans-serif;color:var(--ink)}
+  #fig{width:1400px;padding:30px 32px 26px;background:#fff}
+  h1{font-size:25px;text-align:center}
+  .sub{text-align:center;color:var(--muted);font-size:14px;margin:5px 0 22px}
+  .cols{display:flex;align-items:stretch}
+  .col{flex:1;border:1.4px solid var(--line);border-radius:10px;display:flex;flex-direction:column;overflow:hidden}
+  .head{background:var(--acc);color:#fff;padding:12px 16px}
+  .head .n{font-size:12px;letter-spacing:1.6px;opacity:.8;font-weight:700}
+  .head .t{font-size:18px;font-weight:700;margin-top:2px}
+  .head .w{font-size:12px;opacity:.85;margin-top:3px}
+  .inner{padding:14px;display:flex;flex-direction:column;flex:1;background:#fafbfc}
+  .box{border:1.2px solid var(--line);background:#fff;border-radius:7px;padding:9px 12px}
+  .box b{font-size:14.5px;color:var(--acc)}
+  .box p{font-size:12.8px;color:var(--muted);margin-top:3px;line-height:1.45}
+  .box.key{background:var(--acc);border-color:var(--acc)}
+  .box.key b,.box.key p{color:#fff}
+  .box.soft{background:var(--accl);border-color:var(--accl)}
+  .dn{text-align:center;color:#8a95a5;font-size:15px;line-height:1;margin:6px 0}
+  .gap{width:34px;flex:none;display:flex;align-items:center;justify-content:center}
+  .gap svg{width:26px;height:26px}
+  .chips{display:flex;flex-direction:column;gap:6px}
+  .chip{border:1.2px solid var(--line);background:#fff;border-radius:6px;padding:6px 10px;font-size:13px}
+  .chip b{color:var(--acc)} .chip span{color:var(--muted);font-size:12px}
+  .pair{display:flex;gap:8px}
+  .pair .box{flex:1}
+  .num{display:inline-block;width:20px;height:20px;border-radius:50%;background:var(--acc);color:#fff;font-size:11.5px;text-align:center;line-height:20px;margin-right:6px;vertical-align:1px}
+  .spacer{flex:1}
+  .trt{margin-top:18px;border:1.4px solid var(--line);border-radius:10px;display:flex;overflow:hidden}
+  .trt .lab{background:var(--acc);color:#fff;font-weight:700;font-size:14px;padding:12px 16px;width:150px;display:flex;align-items:center}
+  .trt .grid{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:4px 22px;padding:10px 18px;font-size:13px;background:#fafbfc}
+  .trt .grid div b{color:var(--acc);margin-right:6px}
+</style></head><body><div id="fig">
+<h1>Three-Phase Mother–Baby Trial (MBT) Framework</h1>
+<p class="sub">Participatory design, testing and farmer evaluation of sorghum-based push–pull technology (PPT)</p>
+
+<div class="cols">
+  <!-- I -->
+  <div class="col">
+    <div class="head"><div class="n">PHASE I</div><div class="t">Co-design &amp; crop selection</div><div class="w">Participatory, across three study areas</div></div>
+    <div class="inner">
+      <div class="chips">
+        <div class="chip"><b>Bedeno</b> <span>· Dawa Chefa woreda</span></div>
+        <div class="chip"><b>Shewa Robit</b> <span>· Kebele 07</span></div>
+        <div class="chip"><b>Tere</b> <span>· Qewet woreda</span></div>
+      </div>
+      <div class="dn">▼</div>
+      <div class="box"><b>Cross-site analysis</b><p>Identify crops common to all three areas for PPT diversification</p></div>
+      <div class="dn">▼</div>
+      <div class="box key"><b>Agreed crops</b><p>Main crop: sorghum<br>Diversification: mung bean, haricot bean, tomato</p></div>
+      <div class="spacer"></div>
+    </div>
+  </div>
+
+  <div class="gap"><svg viewBox="0 0 26 26"><path d="M4 13h16M14 6l7 7-7 7" fill="none" stroke="#24365c" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+  <!-- II -->
+  <div class="col">
+    <div class="head"><div class="n">PHASE II</div><div class="t">Mother–baby trials</div><div class="w">Season 1: Jun–Nov 2024 · Season 2: Jun–Dec 2025</div></div>
+    <div class="inner">
+      <div class="box"><b>Mother trial</b><p>At the FTC · researcher-managed<br>RCBD · 6 treatments × 3 replications</p></div>
+      <div class="dn">▼</div>
+      <div class="box soft"><b>Model farmer selection</b></div>
+      <div class="dn">▼</div>
+      <div class="box"><b>Baby trials</b><p>Farmers' own fields · farmer-managed<br>2–3 treatments per farmer</p></div>
+      <div class="dn">▼</div>
+      <div class="box key"><b>On-farm data integration</b><p>Mother and baby trial data combined</p></div>
+      <div class="spacer"></div>
+    </div>
+  </div>
+
+  <div class="gap"><svg viewBox="0 0 26 26"><path d="M4 13h16M14 6l7 7-7 7" fill="none" stroke="#24365c" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+  <!-- III -->
+  <div class="col">
+    <div class="head"><div class="n">PHASE III</div><div class="t">Farmer evaluation</div><div class="w">At three crop growth stages</div></div>
+    <div class="inner">
+      <div class="box"><b><span class="num">1</span>Vegetative</b><p>Crop vigour · pest resistance · weed suppression</p></div>
+      <div class="dn">▼</div>
+      <div class="box"><b><span class="num">2</span>Flowering</b><p>Disease tolerance · flowering synchrony · labour</p></div>
+      <div class="dn">▼</div>
+      <div class="box"><b><span class="num">3</span>Harvest</b><p>Yield · fodder · economic return · preference</p></div>
+      <div class="dn">▼</div>
+      <div class="box soft"><b>Synthesis of farmer preferences</b><p style="color:var(--ink)">Mother trial: 1–10 rating per criterion<br>Baby trials: ranking, most → least preferred</p></div>
+      <div class="dn">▼</div>
+      <div class="box key"><b>Farmer-evaluated PPT configurations</b><p>Evidence base to inform scaling decisions</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="trt">
+  <div class="lab">Treatments<br>(T1–T6)</div>
+  <div class="grid">
+    <div><b>T1</b>Sole sorghum (control)</div>
+    <div><b>T3</b>Sorghum + mung bean intercrop</div>
+    <div><b>T5</b>PPT: sorghum + <i>Desmodium</i> + <i>Brachiaria</i></div>
+    <div><b>T2</b>Sole tomato</div>
+    <div><b>T4</b>Sorghum + haricot bean intercrop</div>
+    <div><b>T6</b>PPT + tomato (diversified PPT)</div>
+  </div>
+</div>
+</div></body></html>
