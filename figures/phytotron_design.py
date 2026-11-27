@@ -32,18 +32,18 @@ def t(x, y, s, size=8, **kw):
 
 
 # ---------------- (a) phytotron ----------------
-t(2, 129.5, "(a) Phytotron allocation per run: temperature (chamber) × photoperiod (light-tight compartment)",
+t(2, 129.5, "(a) Growth phytotron allocation per run: temperature (phytotron) × photoperiod (compartment)",
   10.5, ha="left", weight="bold")
 
 photos = [("10L:14D", "short day"), ("12L:12D", "near-critical"), ("14L:10D", "long day")]
-cw, ch_top, ch_bot = 21.5, 125, 74
-xs = [3, 27, 51, 75]
+cw, ch_top, ch_bot = 29.5, 125, 74
+xs = [3, 35.25, 67.5]
 temps = [15, 25, 35]
 for i, x in enumerate(xs):
     if i < 3:
         T = temps[i]
         box(x, ch_bot, cw, ch_top - ch_bot, "#f7f8fa", ec=INK, lw=1.4)
-        t(x + cw / 2, ch_top - 2.6, f"Phytotron chamber {i + 1}", 9, weight="bold")
+        t(x + cw / 2, ch_top - 2.6, f"Growth phytotron {i + 1}", 9, weight="bold")
         t(x + cw / 2, ch_top - 5.4, f"{T} °C  ·  RH 65 ± 5 %", 8.5, color="#444")
         for j, (pp, lab) in enumerate(photos):
             cy = ch_top - 8.5 - (j + 1) * 13.6
@@ -62,8 +62,8 @@ for i, x in enumerate(xs):
 
 t(50, 70.2,
   "Three temperatures × three photoperiods × three soil-moisture levels (3 × 3 × 3), as in the original design.\n"
-  "Each run is one block: temperatures are re-assigned to chambers 1–3 at random in Run 2, and photoperiods to compartments A–C.\n"
-  "Two runs × 3 chambers × 3 compartments × 18 pots = 324 pots; 20 weeks per run; equal PPFD from LED panels in every compartment.",
+  "Each run is one block: temperatures are re-assigned to growth phytotrons 1–3 at random in Run 2, and photoperiods to compartments A–C.\n"
+  "Two runs × 3 growth phytotrons × 3 compartments × 18 pots = 324 pots; 20 weeks per run; equal PPFD from LED panels in every compartment.",
   7.6, color="#333")
 
 # ---------------- (b) within-compartment layout ----------------
@@ -91,7 +91,7 @@ for i, (m, lab) in enumerate([(30, "30% FC (drought)"), (60, "60% FC (optimum)")
 t(bx + bw / 2, 10,
   "Dd = D. dichotomum;  Di = D. intortum;  FC = field capacity.\n"
   "Pot = experimental unit for species and soil moisture;\n"
-  "compartment = unit for photoperiod; chamber × run = unit for temperature;\n"
+  "compartment = unit for photoperiod; phytotron × run = unit for temperature;\n"
   "run = block (RCBD). Split-split-plot analysis.", 7.4, style="italic", color="#333")
 
 # ---------------- (c) pot structure ----------------
